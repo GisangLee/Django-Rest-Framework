@@ -10,5 +10,6 @@ router.urls => URL 패턴 리스트
 '''
 
 urlpatterns = [
+    path('public/', views.PostListApiView.as_view()),
     path('', include(router.urls)),
 ]
