@@ -1,6 +1,8 @@
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.generics import RetrieveAPIView
+from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
 from .models import Post
@@ -33,6 +35,11 @@ class PostViewSet(ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
 
+    def perform_create(self, serializer):
+        author = self.request.user
+        ip = self.request.META['REMOTE_ADDR']
+        serializer.save(ip=ip, author=author)
+
     @action(detail=False, methods=["GET"])
     def public(self, request):
         qs = self.get_queryset().filter(is_public=True)
@@ -51,3 +58,16 @@ class PostViewSet(ModelViewSet):
     #     print("request.body :", request.body)
     #     print("request.POST :", request.POST)  # print 비추 logger 추천
     #     return super().dispatch(request, *args, **kwargs)
+
+
+class PostDetailAPIView(RetrieveAPIView):
+    queryset = Post.objects.all()
+    renderer_classes = [TemplateHTMLRenderer]
+    template_name = "instagram/post_detail.html"
+
+    def get(self, request, *args, **kwargs):
+        post = self.get_object()
+
+        return Response({
+            'post': post,
+        })
