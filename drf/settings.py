@@ -32,6 +32,7 @@ THIRD_PARTY_APPS = [
 
 MY_APPS = [
     'instagram',
+    'accounts',
 ]
 
 # Application definition
