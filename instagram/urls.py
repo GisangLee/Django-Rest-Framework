@@ -10,6 +10,6 @@ router.urls => URL 패턴 리스트
 '''
 
 urlpatterns = [
-    path('public/', views.public_post_list),
+    # path('public/', views.public_post_list),
     path('', include(router.urls)),
 ]
