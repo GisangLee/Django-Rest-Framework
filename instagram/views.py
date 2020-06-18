@@ -5,6 +5,7 @@ from rest_framework.generics import RetrieveAPIView
 from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework import permissions
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.decorators import action
 from .models import Post
 from .permissions import IsAuthorOrReadonly
@@ -42,6 +43,9 @@ class PostViewSet(ModelViewSet):
         permissions.IsAuthenticated,
         IsAuthorOrReadonly,
     ]
+
+    filter_backends = [SearchFilter, OrderingFilter]
+    search_fields = ['message']
 
     def perform_create(self, serializer):
         author = self.request.user
