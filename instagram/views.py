@@ -3,9 +3,11 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.generics import RetrieveAPIView
 from rest_framework.renderers import TemplateHTMLRenderer
+from rest_framework import permissions
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
 from .models import Post
+from .permissions import IsAuthorOrReadonly
 from .serializers import PostSerializer
 
 
@@ -34,6 +36,12 @@ public_post_list = PublicPostListApiView.as_view()
 class PostViewSet(ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
+
+    # 해당 뷰는 인증완료된 인원만 이용가능
+    permission_classes = [
+        permissions.IsAuthenticated,
+        IsAuthorOrReadonly,
+    ]
 
     def perform_create(self, serializer):
         author = self.request.user
