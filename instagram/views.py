@@ -1,12 +1,31 @@
 from rest_framework import generics
+from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
-from .serializers import PostSerializer
 from .models import Post
+from .serializers import PostSerializer
 
 
-class PostListApiView(generics.ListCreateAPIView):
-    queryset = Post.objects.all()
+class PostListApiView(generics.ListAPIView):
+    queryset = Post.objects.filter(is_public=True)
     serializer_class = PostSerializer
+
+
+class PublicPostListApiView(APIView):
+
+    def get(self, request):
+        queryset = Post.objects.filter(is_public=True)
+        serializer = PostSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+
+public_post_list = PublicPostListApiView.as_view()
+
+# @api_view(['GET'])
+# def public_post_list(request):
+#     queryset = Post.objects.filter(is_public=True)
+#     serializer = PostSerializer(queryset, many=True)
+#     return Response(serializer.data)
 
 
 class PostViewSet(ModelViewSet):
